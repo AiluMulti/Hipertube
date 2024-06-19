@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>Desafío en el Cementerio</title>
+    <style>
+        #barra-progreso {
+            display: none; /* Ocultar la barra inicialmente */
+        }
+    </style>
+</head>
+<body class="background2">
+    <div id="contenedor">
+        <header>
+            <img id="titulo" src="img/titulo2.png" alt="Título">
+        </header>
+        <div id="vinilo-container">
+            <div id="instrucciones">Haz clic para reproducir/pausar. Haz doble clic para reiniciar.</div>
+            <img id="vinilo" src="img/vinilo1.png" onclick="toggleAudio(); showInstructions(event)" ondblclick="restartAudio()" alt="Vinilo">
+            <progress id="barra-progreso" value="0" max="100"></progress>
+        </div>
+        <audio id="miAudio" src="audios/ella.wav"></audio>
+        <audio id="rayoAudio" src="audios/trueno.wav"></audio>
+        <audio id="risaAudio" src="audios/risa.wav"></audio>
+        <audio id="gritosAudio" src="audios/llorando.wav"></audio>
+        <section id="imagenAparece"></section>
+        <img id="rayo" class="rayo" src="img/rayo.png" alt="Rayo">
+        <!-- Botones que se mostrarán al final del audio -->
+        <button id="opcion1" style="display: none; position: absolute; top: 30px; left: 1126px; width: 120px; height: 500px; z-index: 1; background-color: transparent; border: none; cursor: pointer;" onclick="window.location.href='amiga.html'">
+            <div class="boton-brillante"></div>
+        </button>
+        <!--<button id="opcion2" style="display: none; position: absolute; top: 30px; left: -5px; width: 120px; height: 500px; z-index: 1; background-color: transparent; border: none; cursor: pointer;" onclick="window.location.href='terror.html'">
+            <div class="boton-brillante"></div>
+        </button>-->
+    </div>
+    <script>
+        var imagenes = [
+            { src: "img/chicasconlamuertecilla1.png", tiempo: 5 },
+        ];
+
+        var audio = document.getElementById("miAudio");
+        var vinilo = document.getElementById("vinilo");
+        var barraProgreso = document.getElementById("barra-progreso");
+        var imagenActual = 0;
+        var scrollPos = 0;
+        var fondoNegro = false; 
+        var imagenMostradaIndex = -1;
+
+        function toggleAudio() {
+            var titulo = document.getElementById("titulo");
+            var body = document.body;
+
+            if (audio.paused) {
+                playAudio();
+                vinilo.classList.add("playing");
+                titulo.classList.add("fade-out");
+                body.classList.add("black-background");
+                fondoNegro = true;
+            } else {
+                pauseAudio();
+                if (!fondoNegro) { 
+                    body.classList.remove("black-background");
+                }
+                fondoNegro = false; 
+            }
+        }
+
+        function playAudio() {
+            audio.play();
+            audio.addEventListener("timeupdate", mostrarImagen);
+
+            if (barraProgreso.style.display === "none") {
+                barraProgreso.style.display = "block"; 
+            }
+        }
+
+        function mostrarImagen(event) {
+            var tiempoActual = audio.currentTime;
+            var nuevaImagenIndex = -1;
+            
+            for (var i = 0; i < imagenes.length; i++) {
+                if (tiempoActual >= imagenes[i].tiempo) {
+                    nuevaImagenIndex = i;
+                } else {
+                    break;
+                }
+            }
+
+            var imagenAparece = document.getElementById("imagenAparece");
+
+            if (nuevaImagenIndex !== -1 && nuevaImagenIndex !== imagenMostradaIndex) {
+                scrollPos = window.scrollY || document.documentElement.scrollTop;
+
+                var nuevaImagen = imagenes[nuevaImagenIndex];
+                var imgElement = document.createElement("img");
+                imgElement.src = nuevaImagen.src;
+                imgElement.classList.add("fade-in");
+
+                imagenAparece.innerHTML = "";
+                imagenAparece.appendChild(imgElement);
+
+                setTimeout(function() {
+                    window.scrollTo(0, scrollPos);
+                }, 0);
+
+                if (nuevaImagen.src === "img/chicascirculo.jpeg") {
+                    imgElement.useMap = "#image-map";
+                    imgElement.insertAdjacentHTML("afterend", `
+                        <map name="image-map">
+                            <area target="" alt="" title="" href="#" coords="205,4,1047,169" shape="rect" onclick="mostrarRayo(event)"></area>
+                            <area target="" alt="" title="" href="#" coords="577,286,48" shape="circle" onclick="reproducirRisa(event)"></area>
+                        </map>
+                    `);
+                } else if (nuevaImagen.src === "img/chicasconlamuertecilla1.png") {
+                    imgElement.useMap = "#image-map-gritos";
+                    imgElement.insertAdjacentHTML("afterend", `
+                        <map name="image-map-gritos">
+                            <area target="" alt="" title="" href="#" coords="681,235,84" shape="circle" onclick="reproducirGritos(event)"></area>
+                        </map>
+                    `);
+                }
+
+                imagenMostradaIndex = nuevaImagenIndex;
+
+                // Mueve la lógica para mostrar los botones aquí
+                ocultarBotones(); // Asegúrate de que los botones estén ocultos durante la reproducción de audio
+            } else if (nuevaImagenIndex === -1) {
+                imagenAparece.innerHTML = "";
+                imagenMostradaIndex = -1;
+            }
+        }
+
+        function pauseAudio() {
+            audio.pause();
+        }
+
+        function restartAudio() {
+            audio.currentTime = 0;
+            var imagenAparece = document.getElementById("imagenAparece");
+            imagenAparece.innerHTML = "";
+            imagenActual = 0;
+            imagenMostradaIndex = -1;
+            playAudio();
+        }
+
+        function showInstructions(event) {
+            event.stopPropagation();
+            var instrucciones = document.getElementById("instrucciones");
+            instrucciones.style.display = "block";
+
+            setTimeout(function() {
+                instrucciones.classList.add("fade-out");
+                setTimeout(function() {
+                    instrucciones.style.display = "none"; 
+                    instrucciones.classList.remove("fade-out"); 
+                }, 1000); 
+            }, 3000);
+        }
+
+        var risaReproduciendose = false
+
+        function reproducirRisa(event) {
+            event.preventDefault();
+            if (!risaReproduciendose) {
+                var risaAudio = document.getElementById('risaAudio');
+                risaAudio.currentTime = 0;
+                risaAudio.play();
+
+                risaReproduciendose = true;
+
+                risaAudio.addEventListener("ended", function() {
+                    risaReproduciendose = false;
+                });
+
+            }
+        }
+
+        var gritosReproduciendose = false;
+
+        function reproducirGritos(event) {
+            event.preventDefault();
+
+            if (!gritosReproduciendose) {
+                var gritosAudio = document.getElementById("gritosAudio");
+                gritosAudio.currentTime = 0;
+                gritosAudio.play();
+
+                gritosReproduciendose = true;
+
+                gritosAudio.addEventListener("ended", function() {
+                    gritosReproduciendose = false;
+                });
+            }
+        }
+
+        function mostrarRayo(event) {
+            event.preventDefault();
+            var rayo = document.getElementById("rayo");
+            var rayoAudio = document.getElementById("rayoAudio");
+
+            var x = 370;
+            var y = -23;
+
+            rayo.style.left = x + "px";
+            rayo.style.top = y + "px";
+            rayo.style.display = "block";
+            rayoAudio.play();
+
+            setTimeout(function() {
+                rayo.style.display = "none";
+            }, 2000);
+        }
+
+        function ocultarBotones() {
+            var opcion1 = document.getElementById("opcion1");
+            var opcion2 = document.getElementById("opcion2");
+            opcion1.style.display = "none";
+            opcion2.style.display = "none";
+        }
+
+        function mostrarBotones() {
+            var opcion1 = document.getElementById("opcion1");
+            var opcion2 = document.getElementById("opcion2");
+            opcion1.style.display = "block";
+            opcion2.style.display = "block";
+        }
+
+        audio.addEventListener("timeupdate", function() {
+            var porcentaje = (audio.currentTime / audio.duration) * 100;
+            barraProgreso.value = porcentaje;
+        });
+
+        barraProgreso.addEventListener("click", function(event) {
+            var barraRect = barraProgreso.getBoundingClientRect();
+            var clicX = event.clientX - barraRect.left; 
+            var barraAncho = barraProgreso.offsetWidth; 
+            var tiempoTotal = audio.duration; 
+    
+            var nuevoTiempo = (clicX / barraAncho) * tiempoTotal;
+            
+          
+            audio.currentTime = nuevoTiempo;
+            mostrarImagen(); 
+        });
+
+        audio.addEventListener("play", function() {
+            barraProgreso.style.display = "block"; 
+        });
+
+        audio.addEventListener("ended", function() {
+            mostrarBotones(); // Mostrar los botones cuando el audio haya terminado
+        });
+    </script>
+</body>
+</html>

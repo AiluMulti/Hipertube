@@ -1,0 +1,242 @@
+body {
+    background-image: url("img/background2.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    padding: 30px;
+    transition: background-color 1s ease;
+}
+
+body.black-background {
+    background-image: none;
+    background-color: black;
+}
+
+.background2{
+    background-image: url("img/background.png");
+}
+
+#contenedor {
+    max-width: 1200px;
+    padding: 2em;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+}
+
+header {
+    padding: 10px;
+}
+
+#vinilo {
+    width: 100px;
+    height: 100px;
+    background-image: url('img/vinilo1.png');
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    position: relative;
+    transform-origin: center center;
+    background-color: rgba(86, 86, 86);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5)
+}
+
+#vinilo.playing {
+    transform: translateX(570px) translateY(-120px) scale(0.8);
+    transition: transform 0.5s ease;
+}
+
+#vinilo:not(.playing):hover {
+    transform: scale(1.2);
+}
+
+#vinilo-container {
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    overflow: visible;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 2;
+}
+
+#imagenAparece {
+    position: fixed;
+    top: 2.5%;
+    left: 2.5%;
+    width: 95%;
+    height: 95%;
+    z-index: 1;
+    border-radius: 10px;
+}
+
+#imagenAparece img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.fade-in {
+    animation: fadeInAnimation 2s ease forwards;
+}
+
+@keyframes fadeInAnimation {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#instrucciones {
+    display: none;
+    position: absolute;
+    left: 430px;
+    top: 50%;
+    transform: translateY(-195%);
+    background-color: rgba(86, 86, 86);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    font-family: monospace;
+}
+
+#titulo {
+    transition: opacity 1s ease-out;
+    width: 45%;
+}
+
+#titulo.fade-out {
+    opacity: 0;
+}
+
+.titulo2 {
+    position: absolute;
+    right: 30px;
+    top: 280px;
+    width: 50%;
+}
+
+#boton {
+    position: absolute;
+    right: 275px;
+    top: 400px;
+}
+
+.rayo {
+    position: absolute;
+    display: none;
+    z-index: 10;
+    width: 13%;
+}
+
+#boton {
+    width: 200px;
+    height: auto;
+    transition: all 0.3s ease;
+}
+
+#boton:hover {
+    width: 210px;
+    height: auto;
+}
+
+.fade-out {
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+#barra-progreso {
+    position: fixed;
+    top: 10px;
+    left: calc(60% - 40%);
+    width: 60%;
+    height: 5px;
+    background-color: #ddd; 
+    border-radius: 20px; 
+    z-index:9999;
+    transition: transform 0.2s;
+}
+
+#barra-progreso:hover {
+    transform: scaleY(2);
+}
+
+#barra-progreso::-webkit-progress-value {
+    background-color:rgba(65, 65, 65);
+}
+
+#barra-progreso::-moz-progress-bar {
+    background-color: rgba(65, 65, 65); 
+}
+
+#barra-progreso {
+display: none; 
+}
+#instrucciones {
+display: none; 
+transition: opacity 1s;
+}
+.fade-out {
+opacity: 0;
+}
+
+
+#opcion1 {
+    background-repeat: no-repeat;
+    background-size: 450px;
+
+
+}
+
+#opcion2 {
+    background-repeat: no-repeat;
+ background-size: 450px;
+}
+
+#opcion1:hover {
+    background-image: url('img/luz.png');
+    background-position: center 45%;
+}
+
+#opcion2:hover {
+
+    background-image: url('img/luz2.png');
+    background-position: center 47%; 
+}
+
+#opcion1:hover .boton-brillante {
+    display: block; 
+}
+
+#opcion2:hover .boton-brillante {
+    display: block;
+}
+
+#acuchillar{
+    width: 115px;
+    position: absolute;
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
